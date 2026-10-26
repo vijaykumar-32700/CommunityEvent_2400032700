@@ -1,0 +1,60 @@
+# ================================================================
+# .gitignore - Community Event Management System
+# Student: UMMADI VIJAY KUMAR | ID: 2400032700 | Section: S51
+# ================================================================
+
+# ─── Java / Maven ───────────────────────────────────────────────
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.logs
+*.log
+hs_err_pid*
+
+# Maven wrapper (keep .mvn directory if present)
+!.mvn/wrapper/maven-wrapper.jar
+!.mvn/wrapper/maven-wrapper.properties
+
+# ─── Node.js / Frontend ─────────────────────────────────────────
+node_modules/
+dist/
+.vite/
+frontend/dist/
+
+# npm logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+
+# ─── IDEs ───────────────────────────────────────────────────────
+.idea/
+*.iml
+*.ipr
+*.iws
+.classpath
+.project
+.settings/
+*.eclipse
+*.vscode/
+
+# ─── OS ─────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# ─── Docker ─────────────────────────────────────────────────────
+# Keep Dockerfiles tracked, ignore Docker volumes
+*.dockerignore
+
+# ─── Environment / Secrets ──────────────────────────────────────
+.env
+.env.local
+.env.production
+*.env
+
+# ─── Testing ────────────────────────────────────────────────────
+test.txt

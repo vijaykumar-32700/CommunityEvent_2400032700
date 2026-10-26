@@ -1,0 +1,99 @@
+version: '3.8'
+
+# ================================================================
+# Community Event Management System - Docker Compose
+# Student: UMMADI VIJAY KUMAR | ID: 2400032700 | Section: S51
+# Docker Hub: vijaykumar04
+# ================================================================
+
+services:
+
+  # ──────────────────────────────────────────────────────────────
+  # PostgreSQL Database Service (pgAdmin compatible)
+  # ──────────────────────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: community-event-postgres-2400032700
+    restart: always
+    environment:
+      POSTGRES_DB: community_event_2400032700
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - community-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d community_event_2400032700"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  # ──────────────────────────────────────────────────────────────
+  # Spring Boot REST API Backend Service
+  # Image: vijaykumar04/docker-backend-2400032700:latest
+  # ──────────────────────────────────────────────────────────────
+  backend:
+    image: vijaykumar04/docker-backend-2400032700:latest
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: community-event-backend-2400032700
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      - SERVER_PORT=8080
+      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/community_event_2400032700
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - community-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget --quiet --tries=1 --spider http://localhost:8080/ || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+
+  # ──────────────────────────────────────────────────────────────
+  # React + Bootstrap Frontend Service (Served via Nginx)
+  # Image: vijaykumar04/docker-frontend-2400032700:latest
+  # ──────────────────────────────────────────────────────────────
+  frontend:
+    image: vijaykumar04/docker-frontend-2400032700:latest
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: community-event-frontend-2400032700
+    restart: always
+    ports:
+      - "3000:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - community-network
+
+# ──────────────────────────────────────────────────────────────
+# Named Volumes
+# ──────────────────────────────────────────────────────────────
+volumes:
+  postgres_data:
+    name: community-event-postgres-data
+
+# ──────────────────────────────────────────────────────────────
+# Networks
+# ──────────────────────────────────────────────────────────────
+networks:
+  community-network:
+    driver: bridge
+    name: community-event-network
