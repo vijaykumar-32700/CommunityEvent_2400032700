@@ -1,23 +1,11 @@
 package com.klef.soa.docker.service;
 
 import java.util.List;
-import java.util.Optional;
-import com.klef.soa.docker.dto.CommunityEventRequestDTO;
-import com.klef.soa.docker.dto.CommunityEventResponseDTO;
+import com.klef.soa.docker.entity.CommunityEvent;
 
 public interface CommunityEventService {
-
-    CommunityEventResponseDTO addEvent(CommunityEventRequestDTO requestDTO);
-
-    List<CommunityEventResponseDTO> getAllEvents();
-
-    List<CommunityEventResponseDTO> getAllEvents(Boolean completed, String search);
-
-    Optional<CommunityEventResponseDTO> getEventById(Long id);
-
-    CommunityEventResponseDTO updateEvent(Long id, CommunityEventRequestDTO requestDTO);
-
-    boolean deleteEvent(Long id);
-
-    CommunityEventResponseDTO toggleStatus(Long id);
+	public CommunityEvent addCommunityEvent(CommunityEvent event);
+	public List<CommunityEvent> displayCommunityEvents();
+	public CommunityEvent updateCommunityEvent(Long id, CommunityEvent event);
+	public String deleteCommunityEvent(Long id);
 }

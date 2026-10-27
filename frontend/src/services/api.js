@@ -3,14 +3,8 @@
  * Student ID: 2400032700 | Name: UMMADI VIJAY KUMAR | Section: S51
  */
 
-// In development, Vite proxies /api to http://localhost:8080.
-// In Docker production, Nginx reverse proxies /api to backend:8080.
-// Or if VITE_API_BASE_URL is set, uses that absolute URL.
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api/events';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
 
-/**
- * Helper to parse backend error responses cleanly
- */
 async function handleResponse(response) {
   if (!response.ok) {
     let errorData = null;
@@ -22,33 +16,30 @@ async function handleResponse(response) {
 
     const errorMessage =
       errorData?.message ||
-      (errorData?.fieldErrors
-        ? Object.entries(errorData.fieldErrors).map(([field, msg]) => `${field}: ${msg}`).join(', ')
-        : `Request failed with status ${response.status}: ${response.statusText}`);
+      (errorData?.errors
+        ? Object.entries(errorData.errors).map(([field, msg]) => `${field}: ${msg}`).join(', ')
+        : `Request failed with status ${response.status}`);
 
     const error = new Error(errorMessage);
     error.status = response.status;
-    error.fieldErrors = errorData?.fieldErrors || {};
+    error.fieldErrors = errorData?.errors || {};
     throw error;
   }
 
-  // Handle empty 204 No Content
-  if (response.status === 204) {
-    return null;
+  const contentType = response.headers.get('content-type');
+  if (contentType && contentType.includes('application/json')) {
+    return await response.json();
   }
-
-  return await response.json();
+  return await response.text();
 }
 
 export const eventApi = {
-  /**
-   * Health check / ping backend
-   */
+  // Check backend service health
   async checkHealth() {
     try {
-      const response = await fetch(`${API_BASE_URL}`, {
+      const response = await fetch(`${API_BASE_URL}/`, {
         method: 'GET',
-        headers: { 'Accept': 'application/json' },
+        headers: { 'Accept': 'text/plain, application/json' },
       });
       return response.ok;
     } catch {
@@ -56,51 +47,47 @@ export const eventApi = {
     }
   },
 
-  /**
-   * Fetch all events with optional filters
-   */
+  // Display all community events
   async getAllEvents(params = {}) {
-    const url = new URL(API_BASE_URL, window.location.origin);
-    if (params.completed !== undefined && params.completed !== '') {
-      url.searchParams.append('completed', params.completed);
-    }
-    if (params.search && params.search.trim()) {
-      url.searchParams.append('search', params.search.trim());
-    }
-
-    const response = await fetch(url.toString(), {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-      },
-    });
-    return await handleResponse(response);
-  },
-
-  /**
-   * Fetch single event by ID
-   */
-  async getEventById(id) {
-    const response = await fetch(`${API_BASE_URL}/${id}`, {
+    const response = await fetch(`${API_BASE_URL}/displayall`, {
       method: 'GET',
       headers: { 'Accept': 'application/json' },
     });
-    return await handleResponse(response);
+    let list = await handleResponse(response);
+    if (!Array.isArray(list)) list = [];
+
+    // Client-side filtering if search or completed filter is specified
+    if (params.search && params.search.trim()) {
+      const term = params.search.trim().toLowerCase();
+      list = list.filter(
+        (e) =>
+          e.eventName?.toLowerCase().includes(term) ||
+          e.venue?.toLowerCase().includes(term)
+      );
+    }
+    if (params.completed !== undefined && params.completed !== '') {
+      const isComp = String(params.completed) === 'true';
+      list = list.filter((e) => Boolean(e.completed) === isComp);
+    }
+    return list;
   },
 
-  /**
-   * Create new event.
-   * NOTE: ID is deliberately not included in the payload. Backend generates ID.
-   */
+  // Get single event by ID (from displayall)
+  async getEventById(id) {
+    const list = await this.getAllEvents();
+    return list.find((e) => String(e.id) === String(id)) || null;
+  },
+
+  // Add new community event
   async createEvent(eventData) {
     const payload = {
-      eventName: eventData.eventName,
-      venue: eventData.venue,
+      eventName: eventData.eventName.trim(),
+      venue: eventData.venue.trim(),
       attendeeCount: parseInt(eventData.attendeeCount, 10),
       completed: Boolean(eventData.completed),
     };
 
-    const response = await fetch(`${API_BASE_URL}`, {
+    const response = await fetch(`${API_BASE_URL}/add`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -111,18 +98,16 @@ export const eventApi = {
     return await handleResponse(response);
   },
 
-  /**
-   * Update existing event by ID
-   */
+  // Update existing community event
   async updateEvent(id, eventData) {
     const payload = {
-      eventName: eventData.eventName,
-      venue: eventData.venue,
+      eventName: eventData.eventName.trim(),
+      venue: eventData.venue.trim(),
       attendeeCount: parseInt(eventData.attendeeCount, 10),
       completed: Boolean(eventData.completed),
     };
 
-    const response = await fetch(`${API_BASE_URL}/${id}`, {
+    const response = await fetch(`${API_BASE_URL}/update/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -133,29 +118,25 @@ export const eventApi = {
     return await handleResponse(response);
   },
 
-  /**
-   * Delete an event by ID
-   */
+  // Delete community event
   async deleteEvent(id) {
-    const response = await fetch(`${API_BASE_URL}/${id}`, {
+    const response = await fetch(`${API_BASE_URL}/delete/${id}`, {
       method: 'DELETE',
-      headers: {
-        'Accept': 'application/json',
-      },
+      headers: { 'Accept': 'application/json, text/plain' },
     });
     return await handleResponse(response);
   },
 
-  /**
-   * Toggle event completion status
-   */
-  async toggleStatus(id) {
-    const response = await fetch(`${API_BASE_URL}/${id}/toggle-status`, {
-      method: 'PATCH',
-      headers: {
-        'Accept': 'application/json',
-      },
-    });
-    return await handleResponse(response);
+  // Toggle event completion status
+  async toggleStatus(id, currentEvent) {
+    const event = currentEvent || (await this.getEventById(id));
+    if (!event) throw new Error(`Event #${id} not found`);
+    const payload = {
+      eventName: event.eventName,
+      venue: event.venue,
+      attendeeCount: event.attendeeCount,
+      completed: !Boolean(event.completed),
+    };
+    return await this.updateEvent(id, payload);
   },
 };

@@ -11,89 +11,29 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Entity
+@Table(name = "community_events")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "community_events")
 public class CommunityEvent {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "event_name", nullable = false, length = 150)
+    @Column(name = "event_name", nullable = false)
     private String eventName;
 
-    @Column(name = "venue", nullable = false, length = 200)
+    @Column(name = "venue")
     private String venue;
 
-    @Column(name = "attendee_count", nullable = false)
+    @Column(name = "attendee_count")
     private Integer attendeeCount;
 
-    @Column(name = "completed", nullable = false)
+    @Column(name = "completed")
     private Boolean completed;
-
-    public CommunityEvent() {}
-
-    public CommunityEvent(Long id, String eventName, String venue, Integer attendeeCount, Boolean completed) {
-        this.id = id;
-        this.eventName = eventName;
-        this.venue = venue;
-        this.attendeeCount = attendeeCount;
-        this.completed = completed;
-    }
-
-    public CommunityEvent(String eventName, String venue, Integer attendeeCount, Boolean completed) {
-        this.eventName = eventName;
-        this.venue = venue;
-        this.attendeeCount = attendeeCount;
-        this.completed = completed;
-    }
-
-    public static CommunityEventBuilder builder() {
-        return new CommunityEventBuilder();
-    }
-
-    public static class CommunityEventBuilder {
-        private Long id;
-        private String eventName;
-        private String venue;
-        private Integer attendeeCount;
-        private Boolean completed;
-
-        CommunityEventBuilder() {}
-
-        public CommunityEventBuilder id(Long id) {
-            this.id = id;
-            return this;
-        }
-
-        public CommunityEventBuilder eventName(String eventName) {
-            this.eventName = eventName;
-            return this;
-        }
-
-        public CommunityEventBuilder venue(String venue) {
-            this.venue = venue;
-            return this;
-        }
-
-        public CommunityEventBuilder attendeeCount(Integer attendeeCount) {
-            this.attendeeCount = attendeeCount;
-            return this;
-        }
-
-        public CommunityEventBuilder completed(Boolean completed) {
-            this.completed = completed;
-            return this;
-        }
-
-        public CommunityEvent build() {
-            return new CommunityEvent(this.id, this.eventName, this.venue, this.attendeeCount, this.completed);
-        }
-    }
 
     public Long getId() {
         return id;
