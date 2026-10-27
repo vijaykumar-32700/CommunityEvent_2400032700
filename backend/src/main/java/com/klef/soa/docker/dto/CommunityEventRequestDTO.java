@@ -15,7 +15,7 @@ import jakarta.validation.constraints.Size;
 @Schema(description = "Request payload for creating/updating CommunityEvent. No ID field permitted.")
 public class CommunityEventRequestDTO {
 
-    @Schema(description = "Name or title of the community event", example = "Clean Energy & Climate Workshop")
+    //@Schema(description = "Name or title of the community event", example = "Clean Energy & Climate Workshop")
     @NotBlank(message = "Event name is required and cannot be blank")
     @Size(min = 3, max = 100, message = "Event name must be between 3 and 100 characters")
     private String eventName;
@@ -25,7 +25,7 @@ public class CommunityEventRequestDTO {
     @Size(min = 3, max = 150, message = "Venue must be between 3 and 150 characters")
     private String venue;
 
-    @Schema(description = "Expected or confirmed number of attendees", example = "350")
+    //@Schema(description = "Expected or confirmed number of attendees", example = "350")
     @NotNull(message = "Attendee count is required")
     @Min(value = 1, message = "Attendee count must be at least 1")
     @Max(value = 1000000, message = "Attendee count cannot exceed 1,000,000")
