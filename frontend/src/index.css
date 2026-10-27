@@ -1,191 +1,199 @@
 /* ================================================================
-   Community Event Management System - Global Styles
-   Student: UMMADI VIJAY KUMAR | ID: 2400032700 | Section: S51
-   Stack: React 18 + Bootstrap 5 + Vite
+   Community Event Management System — Global Styles
    ================================================================ */
 
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
 :root {
-  --primary-color: #4f46e5;
-  --primary-hover: #4338ca;
-  --primary-light: #eef2ff;
-  --secondary-color: #06b6d4;
-  --success-color: #10b981;
-  --warning-color: #f59e0b;
-  --danger-color: #ef4444;
-  --dark-color: #0f172a;
-  --text-main: #1e293b;
-  --text-muted: #64748b;
-  --bg-main: #f8fafc;
-  --card-bg: #ffffff;
-  --border-color: #e2e8f0;
+  --primary:        #4f46e5;
+  --primary-hover:  #4338ca;
+  --primary-light:  #eef2ff;
+  --accent:         #818cf8;
+  --success:        #10b981;
+  --warning:        #f59e0b;
+  --danger:         #ef4444;
+  --dark:           #0f172a;
+  --text:           #1e293b;
+  --muted:          #64748b;
+  --bg:             #f1f5f9;
+  --card:           #ffffff;
+  --border:         #e2e8f0;
+  --radius:         14px;
+  --radius-sm:      8px;
+  --shadow-sm:      0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+  --shadow-md:      0 4px 16px rgba(0,0,0,.1);
+  --nav-height:     64px;
 }
+
+/* ── Reset & Base ─────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
 
 body {
   margin: 0;
-  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  background-color: var(--bg-main);
-  color: var(--text-main);
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+/* ── Scrollbar ───────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+/* ================================================================
+   NAVBAR
+   ================================================================ */
+.app-navbar {
+  height: var(--nav-height);
+  background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  box-shadow: 0 2px 20px rgba(0,0,0,.25);
+  z-index: 1030;
 }
-::-webkit-scrollbar-track {
-  background: #f1f5f9;
+
+/* Brand */
+.navbar-brand-custom {
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: opacity 0.2s;
 }
-::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 4px;
+.navbar-brand-custom:hover { opacity: 0.88; }
+
+.brand-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 1.15rem;
+  box-shadow: 0 4px 12px rgba(79,70,229,.4);
+  flex-shrink: 0;
 }
-::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+
+.brand-text {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+}
+.brand-main  { color: #ffffff; }
+.brand-accent { color: var(--accent); }
+
+/* Nav buttons */
+.nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 16px;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 8px;
+  background: transparent;
+  color: rgba(255,255,255,0.75);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+.nav-btn:hover {
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+  border-color: rgba(255,255,255,0.25);
+  transform: translateY(-1px);
+}
+.nav-btn-active {
+  background: var(--primary) !important;
+  color: #fff !important;
+  border-color: var(--primary) !important;
+  box-shadow: 0 4px 12px rgba(79,70,229,.35);
 }
 
 /* ================================================================
-   Animations
+   FOOTER
    ================================================================ */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.app-footer {
+  background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding: 16px 0;
+  color: rgba(255,255,255,0.55);
+  font-size: 0.82rem;
 }
 
+.footer-brand {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: rgba(255,255,255,0.9);
+  letter-spacing: -0.2px;
+}
+.footer-brand span { color: var(--accent); }
+
+.footer-stack {
+  color: rgba(255,255,255,0.4);
+  letter-spacing: 0.3px;
+}
+
+/* ================================================================
+   ANIMATIONS
+   ================================================================ */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
 @keyframes spin {
   from { transform: rotate(0deg); }
   to   { transform: rotate(360deg); }
 }
 
-@keyframes pulse-scale {
-  0%, 100% { transform: scale(1); }
-  50%       { transform: scale(1.05); }
-}
-
-.fade-in {
-  animation: fadeIn 0.3s ease-in-out;
-}
-
-/* Spinning icon for loading states */
-.spin {
-  display: inline-block;
-  animation: spin 0.7s linear infinite;
-}
+.fade-in { animation: fadeIn 0.3s ease-in-out; }
+.spin     { display: inline-block; animation: spin 0.7s linear infinite; }
 
 /* ================================================================
-   Card Styling
+   CARDS
    ================================================================ */
 .custom-card {
-  background: #ffffff;
-  border: 1px solid var(--border-color);
-  border-radius: 14px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
-  transition: all 0.25s ease-in-out;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
 }
-
 .custom-card:hover {
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 10px 24px rgba(0,0,0,.08);
 }
 
-/* ================================================================
-   Custom Buttons
-   ================================================================ */
-.btn-primary-custom {
-  background-color: var(--primary-color);
-  border-color: var(--primary-color);
-  color: #ffffff;
-  font-weight: 600;
-  border-radius: 8px;
-  padding: 8px 18px;
-  transition: all 0.2s ease;
-}
-
-.btn-primary-custom:hover {
-  background-color: var(--primary-hover);
-  border-color: var(--primary-hover);
-  color: #ffffff;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.35);
-}
-
-.btn-outline-custom {
-  border: 1px solid var(--border-color);
-  color: var(--text-main);
-  font-weight: 500;
-  border-radius: 8px;
-  background: #ffffff;
-  transition: all 0.2s ease;
-}
-
-.btn-outline-custom:hover {
-  background: #f1f5f9;
-  color: var(--dark-color);
-}
-
-/* ================================================================
-   Status Badges
-   ================================================================ */
-.badge-completed {
-  background-color: #ecfdf5;
-  color: #065f46;
-  border: 1px solid #a7f3d0;
-  font-weight: 600;
-  padding: 6px 12px;
-  border-radius: 20px;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.82rem;
-}
-
-.badge-upcoming {
-  background-color: #eff6ff;
-  color: #1e40af;
-  border: 1px solid #bfdbfe;
-  font-weight: 600;
-  padding: 6px 12px;
-  border-radius: 20px;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.82rem;
-}
-
-.badge-id {
-  background-color: #f3e8ff;
-  color: #6b21a8;
-  border: 1px solid #e9d5ff;
-  font-weight: 700;
-  padding: 4px 10px;
-  border-radius: 8px;
-  font-size: 0.82rem;
-  letter-spacing: 0.5px;
-}
-
-/* ================================================================
-   Stat Cards
-   ================================================================ */
+/* Stat Cards */
 .stat-card {
-  border-radius: 14px;
-  border: 1px solid var(--border-color);
-  background: #ffffff;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
   padding: 20px;
   position: relative;
   overflow: hidden;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-
-.stat-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  opacity: 0;
+  transition: opacity 0.3s;
 }
+.stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 24px rgba(0,0,0,.08);
+}
+.stat-card:hover::before { opacity: 1; }
 
 .stat-icon-wrapper {
   width: 48px;
@@ -198,56 +206,93 @@ body {
 }
 
 /* ================================================================
-   Table Enhancements
+   BADGES
    ================================================================ */
-.table > :not(caption) > * > * {
-  vertical-align: middle;
+.badge-completed {
+  background: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+  font-weight: 600;
+  padding: 5px 11px;
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.78rem;
 }
-
-.table-hover > tbody > tr:hover > * {
-  background-color: #f8f9ff;
+.badge-upcoming {
+  background: #eff6ff;
+  color: #1e40af;
+  border: 1px solid #bfdbfe;
+  font-weight: 600;
+  padding: 5px 11px;
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.78rem;
+}
+.badge-id {
+  background: #f3e8ff;
+  color: #6b21a8;
+  border: 1px solid #e9d5ff;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  letter-spacing: 0.4px;
 }
 
 /* ================================================================
-   Toast Notification Positioning
+   BUTTONS
+   ================================================================ */
+.btn-primary-custom {
+  background: var(--primary);
+  border: none;
+  color: #fff;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  padding: 9px 20px;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+.btn-primary-custom:hover {
+  background: var(--primary-hover);
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(79,70,229,.35);
+}
+
+/* ================================================================
+   FORM FOCUS
+   ================================================================ */
+.form-control:focus, .form-select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(79,70,229,.15);
+}
+
+/* ================================================================
+   TABLE
+   ================================================================ */
+.table > :not(caption) > * > * { vertical-align: middle; }
+.table-hover > tbody > tr:hover > * { background-color: #f8f9ff; }
+
+/* ================================================================
+   TOAST
    ================================================================ */
 .toast-container-custom {
   position: fixed;
   bottom: 1.5rem;
   right: 1.5rem;
   z-index: 9999;
-  min-width: 320px;
-  max-width: 480px;
+  min-width: 300px;
+  max-width: 440px;
 }
 
 /* ================================================================
-   Form Enhancements
-   ================================================================ */
-.form-control:focus,
-.form-select:focus {
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
-}
-
-.form-check-input:checked {
-  background-color: var(--primary-color);
-  border-color: var(--primary-color);
-}
-
-/* ================================================================
-   Responsive Utility
+   RESPONSIVE
    ================================================================ */
 @media (max-width: 576px) {
-  .stat-card {
-    padding: 14px;
-  }
-
-  .custom-card {
-    border-radius: 10px;
-    padding: 16px !important;
-  }
-
-  .btn-primary-custom {
-    padding: 6px 14px;
-  }
+  .stat-card  { padding: 14px; }
+  .nav-btn span { display: none; }
 }
