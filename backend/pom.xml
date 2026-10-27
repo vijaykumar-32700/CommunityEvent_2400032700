@@ -16,7 +16,7 @@
     <artifactId>community-event-backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>community-event-backend</name>
-    <description>Community Event Management Backend - Spring Boot REST API for Docker Deployment</description>
+    <description>Community Event Management Backend - Spring Boot REST API for Docker Deployment (v1.1)</description>
 
     <properties>
         <java.version>17</java.version>

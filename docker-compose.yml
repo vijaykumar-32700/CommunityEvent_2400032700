@@ -1,11 +1,5 @@
 version: '3.8'
 
-# ================================================================
-# Community Event Management System - Docker Compose
-# Student: UMMADI VIJAY KUMAR | ID: 2400032700 | Section: S51
-# Docker Hub: vijaykumar04
-# ================================================================
-
 services:
 
   # ──────────────────────────────────────────────────────────────
@@ -34,7 +28,6 @@ services:
 
   # ──────────────────────────────────────────────────────────────
   # Spring Boot REST API Backend Service
-  # Image: vijaykumar04/docker-backend-2400032700:latest
   # ──────────────────────────────────────────────────────────────
   backend:
     image: vijaykumar04/docker-backend-2400032700:latest
@@ -85,7 +78,6 @@ services:
 
   # ──────────────────────────────────────────────────────────────
   # React + Bootstrap Frontend Service (Served via Nginx)
-  # Image: vijaykumar04/docker-frontend-2400032700:latest
   # ──────────────────────────────────────────────────────────────
   frontend:
     image: vijaykumar04/docker-frontend-2400032700:latest

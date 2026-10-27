@@ -56,5 +56,6 @@ Desktop.ini
 .env.production
 *.env
 
-# ─── Testing ────────────────────────────────────────────────────
 test.txt
+
+# project v1.1

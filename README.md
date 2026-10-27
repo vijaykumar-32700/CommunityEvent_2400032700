@@ -1,4 +1,4 @@
-# 🎉 Community Event Management System
+# 🎉 Community Event Management System (v1.1)
 **Full-Stack SOA & Docker Project | Student: UMMADI VIJAY KUMAR | ID: 2400032700 | Section: S51**
 
 ---

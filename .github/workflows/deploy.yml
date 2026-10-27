@@ -1,7 +1,7 @@
 name: Build and Push Docker Images to Docker Hub
 
 # ================================================================
-# CI/CD Pipeline - Community Event Management System
+# CI/CD Pipeline - Community Event Management System (project v1.1)
 # Student: UMMADI VIJAY KUMAR | ID: 2400032700 | Section: S51
 # Pushes backend + frontend Docker images to Docker Hub
 # ================================================================
