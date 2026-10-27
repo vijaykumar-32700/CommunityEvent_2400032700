@@ -1,83 +1,46 @@
 package com.klef.soa.docker.configuration;
 
-import com.klef.soa.docker.dto.ErrorResponseDTO;
-import jakarta.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import com.klef.soa.docker.dto.ApiResponse;
 
-import java.util.HashMap;
-import java.util.Map;
-
-/**
- * Global Exception Handler for centralized error and validation response formatting.
- * Student ID: 2400032700 | Name: UMMADI VIJAY KUMAR | Section: S51
- */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponseDTO> handleValidationExceptions(
-            MethodArgumentNotValidException ex, HttpServletRequest request) {
-
+    public ResponseEntity<ApiResponse<Map<String, String>>> handleValidationExceptions(
+            MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
-        for (FieldError error : ex.getBindingResult().getFieldErrors()) {
-            errors.put(error.getField(), error.getDefaultMessage());
-        }
+        ex.getBindingResult().getAllErrors().forEach(error -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldName, errorMessage);
+        });
 
-        ErrorResponseDTO errorResponse = new ErrorResponseDTO(
-                HttpStatus.BAD_REQUEST.value(),
-                "Validation Error",
-                "Input validation failed for one or more fields. Please correct the values and retry.",
-                request.getRequestURI(),
-                errors
-        );
+        ApiResponse<Map<String, String>> response = ApiResponse.<Map<String, String>>builder()
+                .success(false)
+                .message("Validation failed. Please review the errors and correct the inputs.")
+                .errors(errors)
+                .build();
 
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ErrorResponseDTO> handleResourceNotFoundException(
-            ResourceNotFoundException ex, HttpServletRequest request) {
-
-        ErrorResponseDTO errorResponse = new ErrorResponseDTO(
-                HttpStatus.NOT_FOUND.value(),
-                "Not Found",
-                ex.getMessage(),
-                request.getRequestURI()
-        );
-
-        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ErrorResponseDTO> handleIllegalArgumentException(
-            IllegalArgumentException ex, HttpServletRequest request) {
-
-        ErrorResponseDTO errorResponse = new ErrorResponseDTO(
-                HttpStatus.BAD_REQUEST.value(),
-                "Bad Request",
-                ex.getMessage(),
-                request.getRequestURI()
-        );
-
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<ApiResponse<Void>> handleIllegalArgumentException(IllegalArgumentException ex) {
+        ApiResponse<Void> response = ApiResponse.error(ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponseDTO> handleGlobalException(
-            Exception ex, HttpServletRequest request) {
-
-        ErrorResponseDTO errorResponse = new ErrorResponseDTO(
-                HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                "Internal Server Error",
-                ex.getMessage() != null ? ex.getMessage() : "An unexpected server error occurred",
-                request.getRequestURI()
-        );
-
-        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<ApiResponse<Void>> handleGeneralException(Exception ex) {
+        ApiResponse<Void> response = ApiResponse.error("An unexpected error occurred: " + ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

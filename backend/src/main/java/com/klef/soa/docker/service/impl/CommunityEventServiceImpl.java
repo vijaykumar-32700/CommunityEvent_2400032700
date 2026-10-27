@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.klef.soa.docker.configuration.ResourceNotFoundException;
 import com.klef.soa.docker.dto.CommunityEventRequestDTO;
 import com.klef.soa.docker.dto.CommunityEventResponseDTO;
 import com.klef.soa.docker.entity.CommunityEvent;
@@ -30,6 +29,7 @@ public class CommunityEventServiceImpl implements CommunityEventService {
                 .attendeeCount(requestDTO.getAttendeeCount())
                 .completed(requestDTO.getCompleted())
                 .build();
+        entity.setId(null);
 
         CommunityEvent saved = communityEventRepository.save(entity);
         return mapToResponseDTO(saved);
@@ -74,31 +74,32 @@ public class CommunityEventServiceImpl implements CommunityEventService {
 
     @Override
     public CommunityEventResponseDTO updateEvent(Long id, CommunityEventRequestDTO requestDTO) {
-        CommunityEvent existing = communityEventRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Community event not found with ID: " + id));
-
-        existing.setEventName(requestDTO.getEventName().trim());
-        existing.setVenue(requestDTO.getVenue().trim());
-        existing.setAttendeeCount(requestDTO.getAttendeeCount());
-        existing.setCompleted(requestDTO.getCompleted());
-
-        return mapToResponseDTO(communityEventRepository.save(existing));
+        return communityEventRepository.findById(id).map(existing -> {
+            existing.setEventName(requestDTO.getEventName().trim());
+            existing.setVenue(requestDTO.getVenue().trim());
+            existing.setAttendeeCount(requestDTO.getAttendeeCount());
+            existing.setCompleted(requestDTO.getCompleted());
+            CommunityEvent updated = communityEventRepository.save(existing);
+            return mapToResponseDTO(updated);
+        }).orElse(null);
     }
 
     @Override
-    public void deleteEvent(Long id) {
-        if (!communityEventRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Community event not found with ID: " + id);
+    public boolean deleteEvent(Long id) {
+        if (communityEventRepository.existsById(id)) {
+            communityEventRepository.deleteById(id);
+            return true;
         }
-        communityEventRepository.deleteById(id);
+        return false;
     }
 
     @Override
     public CommunityEventResponseDTO toggleStatus(Long id) {
-        CommunityEvent existing = communityEventRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Community event not found with ID: " + id));
-        existing.setCompleted(!Boolean.TRUE.equals(existing.getCompleted()));
-        return mapToResponseDTO(communityEventRepository.save(existing));
+        return communityEventRepository.findById(id).map(existing -> {
+            existing.setCompleted(!Boolean.TRUE.equals(existing.getCompleted()));
+            CommunityEvent updated = communityEventRepository.save(existing);
+            return mapToResponseDTO(updated);
+        }).orElse(null);
     }
 
     private CommunityEventResponseDTO mapToResponseDTO(CommunityEvent entity) {

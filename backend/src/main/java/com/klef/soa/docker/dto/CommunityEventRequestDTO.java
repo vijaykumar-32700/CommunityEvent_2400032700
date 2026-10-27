@@ -37,4 +37,82 @@ public class CommunityEventRequestDTO {
     @NotNull(message = "Completed status is required")
     @Schema(description = "Whether the event has completed", example = "false")
     private Boolean completed;
+
+    public CommunityEventRequestDTO() {}
+
+    public CommunityEventRequestDTO(String eventName, String venue, Integer attendeeCount, Boolean completed) {
+        this.eventName = eventName;
+        this.venue = venue;
+        this.attendeeCount = attendeeCount;
+        this.completed = completed;
+    }
+
+    public static CommunityEventRequestDTOBuilder builder() {
+        return new CommunityEventRequestDTOBuilder();
+    }
+
+    public static class CommunityEventRequestDTOBuilder {
+        private String eventName;
+        private String venue;
+        private Integer attendeeCount;
+        private Boolean completed;
+
+        CommunityEventRequestDTOBuilder() {}
+
+        public CommunityEventRequestDTOBuilder eventName(String eventName) {
+            this.eventName = eventName;
+            return this;
+        }
+
+        public CommunityEventRequestDTOBuilder venue(String venue) {
+            this.venue = venue;
+            return this;
+        }
+
+        public CommunityEventRequestDTOBuilder attendeeCount(Integer attendeeCount) {
+            this.attendeeCount = attendeeCount;
+            return this;
+        }
+
+        public CommunityEventRequestDTOBuilder completed(Boolean completed) {
+            this.completed = completed;
+            return this;
+        }
+
+        public CommunityEventRequestDTO build() {
+            return new CommunityEventRequestDTO(this.eventName, this.venue, this.attendeeCount, this.completed);
+        }
+    }
+
+    public String getEventName() {
+        return eventName;
+    }
+
+    public void setEventName(String eventName) {
+        this.eventName = eventName;
+    }
+
+    public String getVenue() {
+        return venue;
+    }
+
+    public void setVenue(String venue) {
+        this.venue = venue;
+    }
+
+    public Integer getAttendeeCount() {
+        return attendeeCount;
+    }
+
+    public void setAttendeeCount(Integer attendeeCount) {
+        this.attendeeCount = attendeeCount;
+    }
+
+    public Boolean getCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(Boolean completed) {
+        this.completed = completed;
+    }
 }

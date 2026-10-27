@@ -73,8 +73,13 @@ public class CommunityEventController {
     })
     public ResponseEntity<String> deleteEvent(
             @Parameter(description = "ID of the event to delete") @PathVariable Long id) {
-        communityEventService.deleteEvent(id);
-        return ResponseEntity.ok("Community event deleted successfully. Deleted ID: " + id);
+        boolean deleted = communityEventService.deleteEvent(id);
+        if (deleted) {
+            return ResponseEntity.ok("Community event deleted successfully. Deleted ID: " + id);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("CommunityEvent with ID " + id + " does not exist");
+        }
     }
 
     // ──────────────────────────────────────────────────────────────
@@ -106,11 +111,15 @@ public class CommunityEventController {
         @ApiResponse(responseCode = "200", description = "Event found"),
         @ApiResponse(responseCode = "404", description = "Event not found")
     })
-    public ResponseEntity<CommunityEventResponseDTO> getEventById(
+    public ResponseEntity<?> getEventById(
             @Parameter(description = "Event ID") @PathVariable Long id) {
         Optional<CommunityEventResponseDTO> event = communityEventService.getEventById(id);
-        return event.map(ResponseEntity::ok)
-                    .orElse(ResponseEntity.notFound().build());
+        if (event.isPresent()) {
+            return ResponseEntity.ok(event.get());
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("CommunityEvent with ID " + id + " does not exist");
+        }
     }
 
     @PutMapping("/api/events/{id}")
@@ -120,10 +129,16 @@ public class CommunityEventController {
         @ApiResponse(responseCode = "400", description = "Validation failed"),
         @ApiResponse(responseCode = "404", description = "Event not found")
     })
-    public ResponseEntity<CommunityEventResponseDTO> updateEvent(
+    public ResponseEntity<?> updateEvent(
             @Parameter(description = "Event ID") @PathVariable Long id,
             @Valid @RequestBody CommunityEventRequestDTO requestDTO) {
-        return ResponseEntity.ok(communityEventService.updateEvent(id, requestDTO));
+        CommunityEventResponseDTO updated = communityEventService.updateEvent(id, requestDTO);
+        if (updated != null) {
+            return ResponseEntity.ok(updated);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("CommunityEvent with ID " + id + " does not exist");
+        }
     }
 
     @DeleteMapping("/api/events/{id}")
@@ -134,8 +149,13 @@ public class CommunityEventController {
     })
     public ResponseEntity<String> deleteEventApi(
             @Parameter(description = "Event ID") @PathVariable Long id) {
-        communityEventService.deleteEvent(id);
-        return ResponseEntity.ok("Community event deleted successfully. ID: " + id);
+        boolean deleted = communityEventService.deleteEvent(id);
+        if (deleted) {
+            return ResponseEntity.ok("Community event deleted successfully. ID: " + id);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("CommunityEvent with ID " + id + " does not exist");
+        }
     }
 
     @PatchMapping("/api/events/{id}/toggle-status")
@@ -144,8 +164,14 @@ public class CommunityEventController {
         @ApiResponse(responseCode = "200", description = "Status toggled"),
         @ApiResponse(responseCode = "404", description = "Event not found")
     })
-    public ResponseEntity<CommunityEventResponseDTO> toggleStatus(
+    public ResponseEntity<?> toggleStatus(
             @Parameter(description = "Event ID") @PathVariable Long id) {
-        return ResponseEntity.ok(communityEventService.toggleStatus(id));
+        CommunityEventResponseDTO toggled = communityEventService.toggleStatus(id);
+        if (toggled != null) {
+            return ResponseEntity.ok(toggled);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("CommunityEvent with ID " + id + " does not exist");
+        }
     }
 }
